@@ -16,6 +16,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,7 +25,13 @@ public class UserServiceImpl implements UserService {
     private UserRegistrationRepo userRegistrationRepo;
     @Autowired
     private JavaMailSender mailSender;
+
+
+    @Autowired
+    private RestTemplate restTemplate;
+
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
     private void sendTemporaryPasswordEmail(String toEmail, String tempPassword) {
         SimpleMailMessage message = new SimpleMailMessage();
 
@@ -51,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRegistrationDTO registerUser(UserRegistrationDTO userRegistrationDTO) {
-        String temPass=generateRandomPassword();
+        String temPass = generateRandomPassword();
         UserRegistration userRegistration = UserRegistration.builder()
                 .fullName(userRegistrationDTO.getFullName())
                 .email(userRegistrationDTO.getEmail())
@@ -95,7 +102,6 @@ public class UserServiceImpl implements UserService {
         String quoteText = null;
         try {
             logger.info("User {} authenticated successfully — fetching random quote", email);
-            RestTemplate restTemplate = new RestTemplate();
             String url = "https://dummyjson.com/quotes/random";
             @SuppressWarnings("unchecked")
             Map<String, Object> resp = restTemplate.getForObject(url, Map.class);
@@ -129,7 +135,7 @@ public class UserServiceImpl implements UserService {
         String newPassword = passResetDTO.getNewPassword();
         String confirmPassword = passResetDTO.getConfirmPassword();
         UserRegistration user = userRegistrationRepo.findByEmail(email);
-        if(user==null)
+        if (user == null)
             throw new LoginFailedException("Email does not exist");
         else if (!user.getPassword().equals(oldPassword)) {
             throw new LoginFailedException("Old password is incorrect");
@@ -140,5 +146,19 @@ public class UserServiceImpl implements UserService {
         user.setActive(true);
         userRegistrationRepo.save(user);
         return "Password reset successful";
+    }
+
+    public List<UserRegistration> getAllUsers() {
+        logger.info("Get all users");
+        return userRegistrationRepo.findAll();
+    }
+
+    public UserRegistration getUserByEmail(String email) {
+        UserRegistration user = userRegistrationRepo.findByEmail(email);
+        if (user == null) {
+            logger.error("User not found for email={}", email);
+            throw new RuntimeException("Email does not exist");
+        }
+        return user;
     }
 }

@@ -1,15 +1,18 @@
 package com.belenits.usermanagementapi.contoller;
-
 import com.belenits.usermanagementapi.dto.PassResetDTO;
 import com.belenits.usermanagementapi.dto.UserRegistrationDTO;
+import com.belenits.usermanagementapi.entity.UserRegistration;
 import com.belenits.usermanagementapi.response.ApiResponse;
 import com.belenits.usermanagementapi.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -46,6 +49,27 @@ public class UserController {
         response.setData(token);
         response.setStatus(200);
         response.setMessage("");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    //http://localhost:9090/users
+    @GetMapping("/users")
+    public ResponseEntity<ApiResponse<List<UserRegistration>>> getAllUsers() {
+        List<UserRegistration> users = userService.getAllUsers();
+        ApiResponse<List<UserRegistration>> response = new ApiResponse<>();
+        response.setData(users);
+        response.setStatus(200);
+        response.setMessage("Users retrieved successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+   //http://localhost:9090/users/
+    @GetMapping("/user/{email}")
+    public ResponseEntity<ApiResponse<UserRegistration>> getUserByEmail(@PathVariable String email) {
+        UserRegistration userRegistration = userService.getUserByEmail(email);
+        ApiResponse<UserRegistration> response = new ApiResponse<>();
+        response.setData(userRegistration);
+        response.setStatus(200);
+        response.setMessage("User retrieved successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
