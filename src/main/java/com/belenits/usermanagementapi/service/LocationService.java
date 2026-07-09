@@ -3,7 +3,6 @@ package com.belenits.usermanagementapi.service;
 import com.belenits.usermanagementapi.dto.CitiesDTO;
 import com.belenits.usermanagementapi.dto.CountryDTO;
 import com.belenits.usermanagementapi.dto.StatesDTO;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

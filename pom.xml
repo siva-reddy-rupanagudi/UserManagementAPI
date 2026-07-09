@@ -28,6 +28,8 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+        <sonar.host.url>http://localhost:9000/</sonar.host.url>
+        <sonar.login>squ_df2f2c8e439af85196d1a4c88fef4878d2c955c6</sonar.login>
     </properties>
     <dependencies>
         <dependency>
@@ -42,6 +44,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -77,6 +80,7 @@
     </dependencies>
 
     <build>
+        <finalName>UserManagementAPI-0.0.1</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

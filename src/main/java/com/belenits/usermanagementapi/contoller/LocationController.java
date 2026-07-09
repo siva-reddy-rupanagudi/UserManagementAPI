@@ -3,7 +3,6 @@ package com.belenits.usermanagementapi.contoller;
 import com.belenits.usermanagementapi.dto.CitiesDTO;
 import com.belenits.usermanagementapi.dto.CountryDTO;
 import com.belenits.usermanagementapi.dto.StatesDTO;
-import com.belenits.usermanagementapi.entity.Country;
 import com.belenits.usermanagementapi.response.ApiResponse;
 import com.belenits.usermanagementapi.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -27,7 +25,7 @@ public class LocationController {
         List<CountryDTO> countries = locationService.getAllCountries();
         ApiResponse<List<CountryDTO>> response = new ApiResponse<>();
         response.setData(countries);
-        response.setMessage("Success");
+        response.setMessage("Fetched all countries");
         response.setStatus(200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -36,7 +34,7 @@ public class LocationController {
         List<StatesDTO> states = locationService.getAllStates(countryName);
         ApiResponse<List<StatesDTO>> response = new ApiResponse<>();
         response.setData(states);
-        response.setMessage("Success");
+        response.setMessage("Fetched states for country: " + countryName);
         response.setStatus(200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -46,7 +44,7 @@ public class LocationController {
         List<CitiesDTO> cities = locationService.getAllCities(countryName,stateName);
         ApiResponse<List<CitiesDTO>> response = new ApiResponse<>();
         response.setData(cities);
-        response.setMessage("Success");
+        response.setMessage("Fetched cities for state: " + stateName + ", country: " + countryName);
         response.setStatus(200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

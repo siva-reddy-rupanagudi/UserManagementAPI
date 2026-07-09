@@ -1,7 +1,6 @@
 package com.belenits.usermanagementapi.repo;
 
 import com.belenits.usermanagementapi.entity.Cities;
-import com.belenits.usermanagementapi.entity.States;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
