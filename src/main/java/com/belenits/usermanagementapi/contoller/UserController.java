@@ -1,4 +1,5 @@
 package com.belenits.usermanagementapi.contoller;
+
 import com.belenits.usermanagementapi.dto.PassResetDTO;
 import com.belenits.usermanagementapi.dto.UserRegistrationDTO;
 import com.belenits.usermanagementapi.entity.UserRegistration;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class UserController {

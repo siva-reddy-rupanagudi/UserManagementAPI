@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Map;
-
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRegistrationRepo userRegistrationRepo;
     @Autowired
     private JavaMailSender mailSender;
+    private static final String EMAIL_NOT_FOUND = "Email does not exist";
 
 
     @Autowired
@@ -87,15 +87,12 @@ public class UserServiceImpl implements UserService {
         logger.info("Login attempt for email={}", email);
         UserRegistration user = userRegistrationRepo.findByEmail(email);
         if (user == null) {
-            logger.warn("Login failed: email not found: {}", email);
-            throw new LoginFailedException("Email does not exist");
+            throw new LoginFailedException(EMAIL_NOT_FOUND);
         } else if (!user.getActive()) {
-            logger.warn("Login failed: account not active: {}", email);
             throw new LoginFailedException("Your account is not active. Please check your email for the activation link.");
         }
 
         if (!user.getPassword().equals(password)) {
-            logger.warn("Login failed: invalid credentials for email={}", email);
             throw new LoginFailedException("Invalid credentials");
         }
 
@@ -114,10 +111,8 @@ public class UserServiceImpl implements UserService {
                 logger.warn("Quote API returned null response for email={}", email);
             }
         } catch (RestClientException e) {
-            logger.error("Failed to fetch quote after successful login for email={}", email, e);
             throw new QuoteFetchException("Failed to retrieve quote after login", e);
         } catch (Exception e) {
-            logger.error("Unexpected error while fetching quote for email={}", email, e);
             throw new QuoteFetchException("Unexpected error while fetching quote after login", e);
         }
 
@@ -136,7 +131,7 @@ public class UserServiceImpl implements UserService {
         String confirmPassword = passResetDTO.getConfirmPassword();
         UserRegistration user = userRegistrationRepo.findByEmail(email);
         if (user == null)
-            throw new LoginFailedException("Email does not exist");
+            throw new LoginFailedException(EMAIL_NOT_FOUND);
         else if (!user.getPassword().equals(oldPassword)) {
             throw new LoginFailedException("Old password is incorrect");
         } else if (!newPassword.equals(confirmPassword)) {
@@ -156,9 +151,9 @@ public class UserServiceImpl implements UserService {
     public UserRegistration getUserByEmail(String email) {
         UserRegistration user = userRegistrationRepo.findByEmail(email);
         if (user == null) {
-            logger.error("User not found for email={}", email);
-            throw new RuntimeException("Email does not exist");
+            throw new RuntimeException(EMAIL_NOT_FOUND);
         }
+        
         return user;
     }
 }
