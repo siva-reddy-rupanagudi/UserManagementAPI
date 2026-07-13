@@ -5,6 +5,7 @@ import com.belenits.usermanagementapi.dto.UserRegistrationDTO;
 import com.belenits.usermanagementapi.entity.UserRegistration;
 import com.belenits.usermanagementapi.exception.LoginFailedException;
 import com.belenits.usermanagementapi.exception.QuoteFetchException;
+import com.belenits.usermanagementapi.mappers.ModelMappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestClientException;
@@ -59,27 +60,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserRegistrationDTO registerUser(UserRegistrationDTO userRegistrationDTO) {
         String temPass = generateRandomPassword();
-        UserRegistration userRegistration = UserRegistration.builder()
-                .fullName(userRegistrationDTO.getFullName())
-                .email(userRegistrationDTO.getEmail())
-                .phone(userRegistrationDTO.getPhone())
-                .country(userRegistrationDTO.getCountry())
-                .state(userRegistrationDTO.getState())
-                .city(userRegistrationDTO.getCity())
-                .password(temPass)
-                .active(false)
-                .build();
+        UserRegistration userRegistration = ModelMappers.toUserRegistration(userRegistrationDTO);
+        userRegistration.setPassword(temPass);
         UserRegistration registration = userRegistrationRepo.save(userRegistration);
         sendTemporaryPasswordEmail(userRegistrationDTO.getEmail(), temPass);
 
-        return UserRegistrationDTO.builder()
-                .fullName(registration.getFullName())
-                .email(registration.getEmail())
-                .phone(registration.getPhone())
-                .country(registration.getCountry())
-                .state(registration.getState())
-                .city(registration.getCity())
-                .build();
+        return ModelMappers.toUserRegistrationDTO(registration);
     }
 
     @Override
